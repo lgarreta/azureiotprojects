@@ -1,0 +1,1 @@
+HostName=ghIoTHub.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=l4PMDqIXfDI+UBy2FriHUoiSS6E3YECRQM+eAiueKQc=
