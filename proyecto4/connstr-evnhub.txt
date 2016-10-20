@@ -1,0 +1,1 @@
+Endpoint=sb://alarmsnamespace.servicebus.windows.net/;SharedAccessKeyName=readwrite;SharedAccessKey=0qXcQ46EtA8JGekwua3f83Td6sJLvWNdmgILIUCUceE=;EntityPath=alarmaseventhub

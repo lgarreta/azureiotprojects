@@ -1,1 +1,0 @@
-HostName=ghIoTHub.azure-devices.net;DeviceId=dev00;SharedAccessKey=Tjqm3SJdnbdYIMwmoSLauT/ovUbAah9PI3chC6be7MM=

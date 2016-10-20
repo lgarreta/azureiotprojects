@@ -14,16 +14,6 @@ var fileEvnHubString = process.argv [2]
 var connectionString = fs.readFileSync (fileEvnHubString, 'utf8');
 console.log ("IoT Hub: " + connectionString);
 
-// Print output to the console:
-var printError = function (err) {
-  console.log(err.message);
-};
-var printMessage = function (message) {
-	console.log('Message received: ');
-	console.log(JSON.stringify(message.body));
-	console.log('');
-};
-
 /* Create the EventHubClient, open the connection to your 
 IoT Hub, and create a receiver for each partition. This 
 application uses a filter when it creates a receiver so 
@@ -42,16 +32,33 @@ function handleAllPartitions (partitionIds) {
 	return partitionIds.map (createReceiver);
 }
 
+// Listen messages from the partition
 function createReceiver (partitionId) {
 	return client.createReceiver(
 		'$Default', 
 		partitionId, 
 		{'startAfterTime' : Date.now()})
-	.then (handleReceiver);
+	.then (function(receiver) {
+		console.log('Created partition receiver: ' + partitionId)
+		receiver.on('errorReceived', printError);
+		receiver.on('message', printMessage);
+	});
 }
 
-function handleReceiver (receiver, partitionId) {
-	console.log('Created partition receiver: ' + partitionId)
-	receiver.on('errorReceived', printError);
-	receiver.on('message', printMessage);
+//---------------------------------------------------------
+//------------------ Helper functions ---------------------
+//---------------------------------------------------------
+
+// Print error output to the console
+function printError (err) {
+  console.log(err.message);
 }
+
+// Print message body to the console
+function printMessage  (message) {
+	console.log('Message received: ');
+	console.log(JSON.stringify(message.body));
+	console.log('');
+}
+
+
