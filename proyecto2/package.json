@@ -1,0 +1,15 @@
+{
+  "name": "proyecto2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dispositivoSimulado.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "azure-event-hubs": "0.0.4",
+    "azure-iot-device-http": "^1.0.16"
+  }
+}

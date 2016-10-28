@@ -6,9 +6,16 @@
 var clientFromConnectionString = require('azure-iot-device-http').clientFromConnectionString;
 var ConnectionString = require('azure-iot-device').ConnectionString;
 var Message = require('azure-iot-device').Message;
+var path   = require ('path'); 
 var fs      = require ('fs');
 
 // Command line parameters
+var progname = path.basename (__filename);
+var args = process.argv;
+if (args.length < 3) {
+	console.log ("USAGE: node %s <connection string device> ", progname);
+	process.exit (-1);
+}
 var fileDeviceConnString = process.argv [2]
 
 // Connection settings

@@ -1,1 +1,1 @@
-HostName=pruebaIothubpuj.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=tM7fknqoLzOyH7HOUBM2lGq2zx/4qJyp0sdtaQygqe4=
+HostName=prueba2iothub.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=of7iPn99Y1xhTI1XpljjmLGnY1uY749pAhISmf/B5hc=

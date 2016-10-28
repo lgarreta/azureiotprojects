@@ -11,9 +11,16 @@ var Protocol = require('azure-iot-device-http').Http;
 var Client = require('azure-iot-device').Client;
 var ConnectionString = require('azure-iot-device').ConnectionString;
 var Message = require('azure-iot-device').Message;
+var path   = require ('path'); 
 var fs = require ('fs');							 
 
 // Command line parameters
+var progname = path.basename (__filename);
+var args = process.argv;
+if (args.length < 3) {
+	console.log ("USAGE: node %s <connection string device> ", progname);
+	process.exit (-1);
+}
 var fileDeviceConnString = process.argv [2]
 
 // Get IoT Hub device info and create the IoT Hub Client
@@ -21,7 +28,7 @@ var connectionString = fs.readFileSync (fileDeviceConnString, 'utf8');
 var deviceId = ConnectionString.parse(connectionString).DeviceId;
 var client   = Client.fromConnectionString(connectionString, Protocol);
 
-// Edison packages
+// Edison and Grove Kit packages
 var five = require("johnny-five");
 var Edison = require("edison-io");
 
@@ -39,7 +46,7 @@ console.log (">>> " + deviceMetaData);
 
 board.on("ready", function() {
 	// Initialize sensors
-	var tempDevice = new five.Temperatura({
+	var tempDevice = new five.Temperature({
 		pin: "A0",
 		controller: "GROVE"
 	});
@@ -61,16 +68,12 @@ board.on("ready", function() {
 					var command = JSON.parse(msg.getData());
 
 					switch (command.Name) {
-						case 'SetFan':
-							var fanValue = command.Parameters.FanValue;
-							if (fanValue == 1.0) {
-								relayDevice.on ()
-								console.log('Fan is turned on');
-							}
-							else if (fanValue == 0.0) {
-								relayDevice.off ()
-								console.log('Fan is turned off');
-							}
+						case 'SetTemperature':
+							var temp = command.Parameters.Temperatura;
+							relayDevice.toggle ()
+		  				console.log ("")
+							console.log('>>>> Temperature has changed to %d, toggle the relay', temp);
+		  				console.log ("")
 							client.complete(msg, printErrorFor('complete'));
 							break;
 						default:
@@ -90,7 +93,7 @@ board.on("ready", function() {
 				Temperatura = tempDevice.celsius;
 				Luminosidad = lightDevice.value;
 				var data = JSON.stringify({
-					'DeviceID': deviceId,
+					'DeviceId': deviceId,
 					'Temperatura': Temperatura,
 					'Luminosidad': Luminosidad
 				});
@@ -126,7 +129,7 @@ function getDeviceMetaData () {
 		'IsSimulatedDevice': 0,
 		'Version': '1.0',
 		'DeviceProperties': {
-		'DeviceID': deviceId,
+		'DeviceId': deviceId,
 		'HubEnabledState': 1,
 		'CreatedTime': '2016-09-21T20:28:55.5448990Z',
 		'DeviceState': 'normal',
@@ -141,7 +144,7 @@ function getDeviceMetaData () {
 		'Latitude': 3.247700,
 		'Longitude': -76.530800
 		},
-		'Commands': [{'Name': 'SetFan', 'Parameters': [{ 'Name': 'Fan', 'Type': 'double' }] }]
+		'Commands': [{'Name': 'SetTemperature', 'Parameters': [{ 'Name': 'Temperatura', 'Type': 'double' }] }]
 	};
 	return deviceMetaData;
 }

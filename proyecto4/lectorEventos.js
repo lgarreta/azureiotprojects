@@ -7,6 +7,11 @@ to enable you to read device-to-cloud messages.
 var EventHubClient = require('azure-event-hubs').Client;
 var fs      = require ('fs');
 
+if (process.argv.length < 3) {
+	console.log ("USAGE: node lectorEventos.js <connstring Event Hub or IoT Hub>")
+	process.exit (0)
+}
+
 // Command line parameters
 var fileEvnHubString = process.argv [2]
 

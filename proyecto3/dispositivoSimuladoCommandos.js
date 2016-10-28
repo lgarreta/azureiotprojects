@@ -6,10 +6,20 @@
 var clientFromConnectionString = require('azure-iot-device-http').clientFromConnectionString;
 var ConnectionString = require('azure-iot-device').ConnectionString;
 var Message = require('azure-iot-device').Message;
+var path   = require ('path'); 
 var fs      = require ('fs');
 
+// Command line parameters
+var progname = path.basename (__filename);
+var args = process.argv;
+if (args.length < 3) {
+	console.log ("USAGE: node %s <connection string device> ", progname);
+	process.exit (-1);
+}
+var fileDeviceConnString = process.argv [2]
+
 // Connection settings
-var connectionString = fs.readFileSync ('connstr-device.txt', 'utf8');
+var connectionString = fs.readFileSync (fileDeviceConnString, 'utf8');
 var client   = clientFromConnectionString(connectionString);
 var deviceId = ConnectionString.parse(connectionString).DeviceId;
 
@@ -21,9 +31,10 @@ var connectCallback = function (err) {
   } else {
 		console.log('Client connected');
 		// Create a message and send it to the IoT Hub every 5 second
-		setInterval (sendEventMessage, 5000);
+		setInterval (sendEventMessage, 2000);
 		// Listen for  incoming messages
-		client.on ('message', messageHandler);
+		 client.on ('message', messageHandler);
+
 	}
 };
 
@@ -41,9 +52,9 @@ function messageHandler (msg) {
 	  var command = JSON.parse(msg.getData());
 	  switch (command.Name) {
 		case 'SetTemperature':
-		  var temperature = command.Parameters.Temperature;
+		  var temperatura = command.Parameters.Temperatura;
 		  console.log ("")
-		  console.log('>>>>> Lowering the temperature to :' + temperature + ' ºC');
+		  console.log (">>>>>> Receiving command to change temperature to: "+temperatura);
 		  console.log ("")
 		  client.complete(msg, printErrorFor('complete'));
 		  break;
@@ -65,18 +76,18 @@ function sendEventMessage () {
 	var v2 = 'SensorTemp';
 	var v3 = 'version01';
 	var v4 = deviceId;
-	var v5 = 3 + (Math.random() * 40);
+	var v5 = 10 + (Math.random() * 40);
 
 	var data = JSON.stringify({
-		"ObjectName": v1, 
+		"deviceId": v1, 
 		"ObjectType": v2, 
 		"Version": v2, 
 		"TargetAlarmDevice": v4, 
-		'Temperature': v5 
+		'Temperatura': v5 
 	});
 	var message = new Message(data);
 	console.log("Sending message: " + message.getData());
-	client.sendEvent(message, printResultFor('send'));
+	client.sendEvent  (message, printResultFor('send'));
 }
 
 // Print mensajes fo the object "op"
