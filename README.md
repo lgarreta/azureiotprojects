@@ -85,7 +85,7 @@ En este nuevo proyecto (Figura [Fig:Proyecto2]), extendemos el
 trabajo anterior adicionando un trabajo de análisis de 
 transmisiones que toma los valores de temperatura enviados por el 
 dispositivo simulado al centro de eventos del IoT Hub, para luego 
-filtrar las temperaturas mayores a  y enviarlas a un nuevo centro 
+filtrar las temperaturas mayores a 17 grados C y enviarlas a un nuevo centro 
 de eventos que vamos a crear específicamente para alarmas. Los 
 programas son los mismos del proyecto anterior, solo que ahora el 
 lector de eventos (lectorEventos.js) se configura con el string 
@@ -93,7 +93,8 @@ de conexión del nuevo centro de eventos de alarmas y por lo tanto
 va a estar escuchando un centro de eventos diferente al del 
 primer proyecto. Este es el centro de eventos donde el trabajo de 
 análisis de transmisiones coloca los mensajes con temperaturas 
-altas. 
+
+. 
 
 ## Proyecto 3: Monitoreo Remoto de Dispositivos y Envío de Alarmas a Dispositivos y a Twitter
 Hay que tener en cuenta que el proyecto anterior filtra 
@@ -118,13 +119,38 @@ obtener las credenciales necesarias, siga las instrucciones en
 https://apps.twitter.com/
 
 ## Proyecto 4: Monitoreo y Control Remoto Usando una Tarjeta Intel Edison y un kit de Sensores
+En este proyecto vamos a monitorear y controlar remotamente tres 
+dispositivos: un sensor de temperatura, un sensor de luminosidad, 
+y un relé. Los sensores van a enviar continuamente sus valores 
+físicos a la nube, donde un trabajo de análisis de transmisiones 
+va a generar alarmas si los valores de temperaturas son mayores a 
+17  (Tenga en cuenta la temperatura del ambiente donde realice su 
+experimento[Nota al pie:
+Al momento que esté ejecutando el experimento, tenga en cuenta la 
+temperatura de su ambiente: si el sensor marca siempre mayor a 17 
+ entonces ajuste el umbral de la alarma (Query del Stream 
+Analytics Job en Azure) a otro superior (e.g. 22 ) para que de 
+verdad se generen alarmas. Realize algo similar si la temperatura 
+de su ambiente es menor a 20 grados. Las alarmas son leídas en la nube por un programa que actúa 
+como WorkerRole el cual notifica remotamente a la tarjeta Edison 
+para que active o desactive un dispositivo relé y envíe un tweet 
+hacia una cuenta registrada. 
 
-* Preparar la tarjeta Edison siguiendo las indicaciones en:  https://software.intel.com/en-us/get-started-edison-linux
-  * Verifique que la conexión al Internet funciona.
+En los anteriores proyectos el programa de dispositivo simulado 
+genera los valores dentro del programa. Ahora, el nuevo programa 
+del dispositivo ("dispositivoEdison.js") captura de los sensores 
+reales los valores físicos por medio de una tarjeta Intel Edison (
+https://www.arduino.cc/en/ArduinoCertified/IntelEdison) 
+que actúa como un hub local. Esta tarjeta incorpora un 
+procesador Atom y corre una distribución del sistema operativo 
+Linux (distribución Yocto). Para la parte de sensores y 
+actuadores usamos un kit de inicio Grove (Grove Starter Kit - 
+Intel IoT Edition Gen2 que incluye una tarjeta Arduino compatible (Arduino compatible 
+shield) a la que se le pueden conectar varios tipos de sensores.
 
-* Preparar el Kit de inicio Grove-Starter (Grove Starter Kit - 
-  Intel IoT Edition Gen2 (https://www.seeedstudio.com/Grove-starter-kit-plus-Intel-IoT-Edition-for-Intel-Galileo-Gen-2-and-Edison-p-1978.html) y conectar los siguientes dispositivos tomando como referencia 
-  la imagen de la Figura [fig:Conexion]:
-  * Sensor de temperatura a la entrada análoga A0
-  * Sensor de luminosidad a la entrada análoga A3
-  * Relé digital a la entrada digital D3 
+Ahora la funcionalidad del programa del dispositivo 
+("dispositivoEdison.js") adiciona tres nuevos elementos: primero, 
+la inicialización del hardware (tarjeta y sensores); segundo, la 
+obtención de los valores físicos de los sensores reales 
+(temperatura y luminosidad); y tercero, la manipulación de otro 
+dispositivo (abrir/cerrar el relé).
