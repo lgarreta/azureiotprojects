@@ -61,9 +61,9 @@ clientEvnhub.open()
 
 					receiver.on ('errorReceived', errorHandler);
 					receiver.on ('message', messageHandler);
-			});
+				}).catch(errorHandler);
 		});
-	}).catch(errorHandler);
+	});
 
 //------------------ Callback functions -------------------
 
@@ -71,14 +71,11 @@ clientEvnhub.open()
 // MessageHander that sends commands to devices and twitters
 //---------------------------------------------------------
 var messageHandler = function (message) {
-	var jsonMessage = JSON.stringify(message.body);
+	var body = message.body.toString('utf-8');
 
-	console.log ("<<<< json " + jsonMessage );
-
-	var values = JSON.parse (jsonMessage);
+	var values = JSON.parse (body);
 	var newTemperatura = values.Temperatura - 5;
-	var deviceId = values.DeviceID;
-	console.log ("<<<< " + deviceId );
+	var deviceId = values.deviceId;
 
 	var data = JSON.stringify({
 		'Name':'SetTemperature',
@@ -90,7 +87,7 @@ var messageHandler = function (message) {
 	message.messageId = 1;
 		
 	// Sends command to device
-	console.log('\n>>> Receiving temperture %d and Sending command to change it to %d ', values.Temperatura, newTemperatura);
+	console.log('\n>>> High temperature: %d in device %s. Sending command <setTemperature> to toggle the relay \n', values.Temperatura, deviceId);
 	//clientIothub.getFeedbackReceiver (receiveFeedback);
 	clientIothub.send (deviceId, data, printResultFor ('send'));
 

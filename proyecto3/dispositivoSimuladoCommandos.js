@@ -20,8 +20,8 @@ var fileDeviceConnString = process.argv [2]
 
 // Connection settings
 var connectionString = fs.readFileSync (fileDeviceConnString, 'utf8');
-var client   = clientFromConnectionString(connectionString);
 var deviceId = ConnectionString.parse(connectionString).DeviceId;
+var client   = clientFromConnectionString(connectionString);
 
 /* Create a callback and use the setInterval function
    to send a new message to your IoT hub every second */
@@ -31,7 +31,7 @@ var connectCallback = function (err) {
   } else {
 		console.log('Client connected');
 		// Create a message and send it to the IoT Hub every 5 second
-		setInterval (sendEventMessage, 2000);
+		setInterval (sendEventMessage, 5000);
 		// Listen for  incoming messages
 		 client.on ('message', messageHandler);
 
@@ -78,13 +78,7 @@ function sendEventMessage () {
 	var v4 = deviceId;
 	var v5 = 10 + (Math.random() * 40);
 
-	var data = JSON.stringify({
-		"deviceId": v1, 
-		"ObjectType": v2, 
-		"Version": v2, 
-		"TargetAlarmDevice": v4, 
-		'Temperatura': v5 
-	});
+	var data = JSON.stringify({"deviceId":v1,"ObjectType":v2,"Version":v2,"TargetAlarmDevice":v4,'Temperatura':v5});
 	var message = new Message(data);
 	console.log("Sending message: " + message.getData());
 	client.sendEvent  (message, printResultFor('send'));

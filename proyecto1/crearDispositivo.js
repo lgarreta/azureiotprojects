@@ -31,8 +31,6 @@ var registry = iothub.Registry.fromConnectionString(connString);
 var device = new iothub.Device(null);
 var hostname = ConnectionString.parse(connString).HostName;
 
-console.log ("...Hostname: ", hostname);
-
 // Creates a new device definition in the device identity registry in your
 // IoT hub. This code creates a new device if the device id does not exist in
 // the registry, otherwise it returns the key of the existing device
@@ -49,13 +47,12 @@ registry.create(device, function(err, deviceInfo, res) {
 
 function printDeviceInfo(err, deviceInfo, res) {
 	if (deviceInfo) 
-		console.log (">>> Connection String " + deviceName + ":\n" +
-		getConnectionString (deviceInfo));
+		console.log (getConnectionString (deviceInfo));
 }
 
 function getConnectionString(device) {
   return 'HostName=' + hostname + ';' +
-    'DeviceId=' + device.deviceId + ';' +
+    'deviceId=' + device.deviceId + ';' +
     'SharedAccessKey=' + device.authentication.SymmetricKey.primaryKey;
 }
 
